@@ -49,10 +49,11 @@ print (Group_alone)
 plt.show()
 
 print (train2.info())
+train3=train2[['Survived','Sex','Age','Pclass','Alone']]
 #variable dependiente
-y=train2['Survived']
+y=train3['Survived']
 #variables independientes
-x=train2[['Sex','Age','Pclass','Alone']]
+x=train3[['Sex','Age','Pclass','Alone']]
 print (y.shape, x.shape)
 
 #eliminar la columna embarked

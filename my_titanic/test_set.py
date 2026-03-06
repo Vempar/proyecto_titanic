@@ -6,11 +6,10 @@ from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix,ConfusionMatrixDisplay
 
-
-train= pd.read_csv("my_titanic/datasets/train.csv") 
 test= pd.read_csv("my_titanic/datasets/test.csv") 
+train= pd.read_csv("my_titanic/datasets/train.csv") 
 train2=train[['Survived','Sex','Pclass','Age','PassengerId']]
-
+#modelo de entrenamiento
 #se establece la edad media para los pasajeros que no tienen edad conocida se establece esta edad por los varones del grupo sin hijos
 train2['Age']=train2['Age'].fillna(train2['Age'].mean())
 
@@ -25,49 +24,10 @@ train3=train2[['Survived','Sex','Age','Pclass','Alone']]
 y=train3['Survived']
 #variables independientes
 x=train3[['Sex','Age','Pclass','Alone']]
-print (y.shape, x.shape)
-#entrenamiento de los modelos de regresion logistica 
-logreg=LogisticRegression()
-logreg.fit(x,y)
-
-
-y_true = [1, 0, 0, 1, 1, 0, 1, 0, 0, 0]
-y_pred = [1, 1, 0, 1, 0, 0, 1, 1, 1, 0]
-
-print("Precisión:", accuracy_score(y_true, y_pred))
-# Crear la matriz de confusión
-cm = confusion_matrix(y_true, y_pred)
-cm2= confusion_matrix(y, logreg.predict(x))
-
-# Crear la visualización con ConfusionMatrixDisplay
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['verdadero', 'falso'])
-disp2 = ConfusionMatrixDisplay(confusion_matrix=cm2, display_labels=['Muere = 0', 'Sobrevive = 1'])
-
-# Graficar la matriz
-disp.plot(cmap=plt.cm.Blues)
-plt.title("Matriz de Confusión")
-plt.show()
-disp2.plot(cmap=plt.cm.Blues)
-accuracy= accuracy_score(y, logreg.predict(x))
-plt.title("Accuracy: " + str(accuracy))
-plt.show()
-
-
-#entrenamiento del modelo de arbol de decision
-decisiontree=DecisionTreeClassifier()
-decisiontree.fit(x,y)
-
-# Crear el árbol de decisión
-fig, ax = plt.subplots(figsize=(12, 12))
-tree.plot_tree(decisiontree, feature_names=x.columns, class_names=['Muere', 'Sobrevive'], filled=True)
-plt.show()
-
-Accuracy= accuracy_score(y, decisiontree.predict(x))
-print("Accuracy: " + str(Accuracy))
-
 
 test2=test[['Sex','Pclass','Age','PassengerId']]
 
+#modelo final para test
 #se establece la edad media para los pasajeros que no tienen edad conocida se establece esta edad por los varones del grupo sin hijos
 test2['Age']=test2['Age'].fillna(test2['Age'].mean())
 
@@ -76,6 +36,13 @@ test2['Sex']=test2['Sex'].map({'female':0,'male':1}).astype(int)
 
 #crea una nueva columna en la que indica si el pasajero  esta solo  y sin familia
 test2['Alone']=np.where(((test['SibSp']==0)&(test['Parch'])==0),1,0)
+
+#entrenamiento del modelo de arbol de decision
+decisiontree=DecisionTreeClassifier()
+decisiontree.fit(x,y)
+#entrenamiento de los modelos de regresion logistica 
+logreg=LogisticRegression()
+logreg.fit(x,y)
 
 features=['Sex','Age','Pclass','Alone']
 x_text= test2[features]
@@ -93,4 +60,4 @@ def download_predec (Y_pred, name):
     output.to_csv(name, index=False)
     print ("El archivo se ha guardado como " + name)    
 
-download_predec(Y_pred_tree, 'my_titanic/datasets/decision_tree0.csv')
+download_predec(Y_pred_tree, 'my_titanic/datasets/decision_tree01.csv')
