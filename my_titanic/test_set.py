@@ -9,6 +9,12 @@ from sklearn.metrics import accuracy_score, confusion_matrix,ConfusionMatrixDisp
 test= pd.read_csv("my_titanic/datasets/test.csv") 
 train= pd.read_csv("my_titanic/datasets/train.csv") 
 train2=train[['Survived','Sex','Pclass','Age','PassengerId']]
+
+#variables para generar el nombre del archivo
+name_tree="fichero_modelo_tree"
+name_log="fichero_modelo_log"
+Complemento_archivo=np.random.randint(10000000, 99999999)
+
 #modelo de entrenamiento
 #se establece la edad media para los pasajeros que no tienen edad conocida se establece esta edad por los varones del grupo sin hijos
 train2['Age']=train2['Age'].fillna(train2['Age'].mean())
@@ -54,10 +60,19 @@ print(Y_pred_logreg[0:10])
 
 
 
-def download_predec (Y_pred, name):
+def download_predec_tree (Y_pred, name):
     output = pd.DataFrame({'PassengerId': test['PassengerId'],
                             'Survived': Y_pred })
     output.to_csv(name, index=False)
-    print ("El archivo se ha guardado como " + name)    
+    print ("El archivo se ha guardado como " + name_tree)    
 
-download_predec(Y_pred_tree, 'my_titanic/datasets/decision_tree01.csv')
+download_predec_tree(Y_pred_tree, 'my_titanic/datasets/'+name_tree+"_"+str(Complemento_archivo)+".csv")
+
+
+def download_predec_log (Y_predL, name):
+    output = pd.DataFrame({'PassengerId': test['PassengerId'],
+                            'Survived': Y_predL })
+    output.to_csv(name, index=False)
+    print ("El archivo se ha guardado como " + name_log)    
+
+download_predec_log(Y_pred_logreg, 'my_titanic/datasets/'+name_log+"_"+str(Complemento_archivo)+".csv")
